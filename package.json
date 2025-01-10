@@ -1,5 +1,5 @@
 {
-  "name": "JoinToIt",
+  "name": "join-to-it",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -10,8 +10,16 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-vector-icons/common": "^11.0.0",
+    "@react-native-vector-icons/material-design-icons": "^7.4.47",
+    "@react-navigation/bottom-tabs": "^7.2.0",
+    "@react-navigation/native": "^7.0.14",
+    "axios": "^1.7.9",
     "react": "18.3.1",
-    "react-native": "0.76.5"
+    "react-native": "0.76.5",
+    "react-native-maps": "^1.20.1",
+    "react-native-safe-area-context": "^5.0.0",
+    "react-native-screens": "^4.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
