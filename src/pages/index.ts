@@ -1,2 +1,2 @@
-export {SearchScreen} from './search/index';
-export {MapScreen} from './map/index';
+export { SearchScreen } from './search';
+export { MapScreen } from './map';

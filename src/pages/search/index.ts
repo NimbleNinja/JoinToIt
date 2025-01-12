@@ -1,1 +1,1 @@
-export {SearchScreen} from './ui/SearchScreen';
+export { SearchScreen } from './ui/SearchScreen';

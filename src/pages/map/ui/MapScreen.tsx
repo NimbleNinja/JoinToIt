@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import MapView, { Callout, LatLng, Marker, Point } from 'react-native-maps';
-import { fetchLocation } from '../../../features/mapWeather/model/mapGeocoding';
+import React, { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import MapView, { LatLng, Marker } from 'react-native-maps';
+import { fetchLocation } from 'features/mapLocation/model/mapGeocoding';
+import { MapCallout } from './MapCallout';
 
 const initialRegion = {
   latitude: 50.4501,
@@ -10,58 +11,50 @@ const initialRegion = {
   longitudeDelta: 0.0421,
 };
 
-type MapMarker = {
-  coordinate: LatLng;
-  position: Point;
+type MapMarker = LatLng & {
+  locationName: string | null;
 };
 
 export const MapScreen = () => {
-  const [location, setLocation] = useState('');
   const [marker, setMarker] = useState<MapMarker | null>(null);
 
   const locationHandler = async (params: LatLng) => {
+    if (marker) {
+      setMarker(null);
+    }
+
     try {
       const response = await fetchLocation(params);
-      console.log(response.data);
-      if (!response.data.length) {
-        setLocation('');
-      }
-      setLocation(response.data[0].name);
+      setMarker({
+        locationName: response.data[0]?.name || 'Not found',
+        latitude: params.latitude,
+        longitude: params.longitude,
+      });
     } catch (error) {
-      console.log(error);
-      setLocation('');
+      setMarker({
+        locationName: 'Fetch error',
+        latitude: params.latitude,
+        longitude: params.longitude,
+      });
     }
   };
-
-  useEffect(() => {
-    locationHandler(initialRegion);
-  }, []);
-
-  console.log(location);
 
   return (
     <View style={styles.container}>
       <MapView
         style={styles.map}
         initialRegion={initialRegion}
-        onLongPress={({ nativeEvent: { coordinate, position } }) => {
-          setMarker({ coordinate, position });
-          locationHandler(coordinate);
-        }}>
+        onLongPress={({ nativeEvent: { coordinate } }) =>
+          locationHandler(coordinate)
+        }>
         {marker && (
           <Marker
             coordinate={{
-              latitude: marker.coordinate.latitude,
-              longitude: marker.coordinate.longitude,
+              latitude: marker.latitude,
+              longitude: marker.longitude,
             }}>
-            {location && (
-              <Callout style={styles.callout}>
-                <View>
-                  <Text numberOfLines={2} style={styles.calloutTitle}>
-                    {location}
-                  </Text>
-                </View>
-              </Callout>
+            {marker.locationName && (
+              <MapCallout location={marker.locationName} />
             )}
           </Marker>
         )}
@@ -84,14 +77,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 24,
     fontWeight: '700',
-  },
-  callout: {
-    width: 150,
-    height: 100,
-  },
-  calloutTitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    textAlign: 'center',
   },
 });

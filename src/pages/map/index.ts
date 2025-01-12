@@ -1,1 +1,1 @@
-export {MapScreen} from './ui/MapScreen';
+export { MapScreen } from './ui/MapScreen';

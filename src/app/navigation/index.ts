@@ -1,3 +1,1 @@
-import Navigation from './ui/Navigation';
-
-export {Navigation};
+export { Navigation } from './ui/Navigation';
