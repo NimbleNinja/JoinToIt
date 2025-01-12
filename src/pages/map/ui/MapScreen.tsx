@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import MapView, { LatLng, Marker } from 'react-native-maps';
-import { fetchLocation } from 'features/mapLocation/model/mapGeocoding';
-import { MapCallout } from './MapCallout';
+import { fetchLocation } from 'features/mapLocation/api/mapGeocoding';
+import { fetchWeatherByLatLong } from 'features/weatherForecast';
 
 const initialRegion = {
   latitude: 50.4501,
@@ -11,31 +11,30 @@ const initialRegion = {
   longitudeDelta: 0.0421,
 };
 
-type MapMarker = LatLng & {
-  locationName: string | null;
-};
-
 export const MapScreen = () => {
-  const [marker, setMarker] = useState<MapMarker | null>(null);
+  const [latLong, setLatlong] = useState<LatLng | null>(null);
+  const [markerText, setMarkerText] = useState('');
 
   const locationHandler = async (params: LatLng) => {
-    if (marker) {
-      setMarker(null);
-    }
+    setMarkerText('Loading...');
 
     try {
-      const response = await fetchLocation(params);
-      setMarker({
-        locationName: response.data[0]?.name || 'Not found',
-        latitude: params.latitude,
-        longitude: params.longitude,
-      });
+      const locationRequest = fetchLocation(params);
+      const weatherRequest = fetchWeatherByLatLong(params);
+      const [locationResponse, weatherResponse] = await Promise.all([
+        locationRequest,
+        weatherRequest,
+      ]);
+
+      setMarkerText(
+        `${locationResponse.data[0]?.name || 'Location not found'}${
+          weatherResponse.data.days.length
+            ? ` ${Math.round(weatherResponse.data.days[0].temp)}°`
+            : ''
+        }`,
+      );
     } catch (error) {
-      setMarker({
-        locationName: 'Fetch error',
-        latitude: params.latitude,
-        longitude: params.longitude,
-      });
+      setMarkerText('Location error');
     }
   };
 
@@ -44,19 +43,18 @@ export const MapScreen = () => {
       <MapView
         style={styles.map}
         initialRegion={initialRegion}
-        onLongPress={({ nativeEvent: { coordinate } }) =>
-          locationHandler(coordinate)
-        }>
-        {marker && (
+        onLongPress={({ nativeEvent: { coordinate } }) => {
+          setMarkerText('');
+          setLatlong(coordinate);
+        }}>
+        {latLong && (
           <Marker
-            coordinate={{
-              latitude: marker.latitude,
-              longitude: marker.longitude,
-            }}>
-            {marker.locationName && (
-              <MapCallout location={marker.locationName} />
-            )}
-          </Marker>
+            coordinate={latLong}
+            title={markerText}
+            onPress={({ nativeEvent: { coordinate } }) =>
+              locationHandler(coordinate)
+            }
+          />
         )}
       </MapView>
     </View>

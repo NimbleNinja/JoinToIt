@@ -6,7 +6,7 @@ export const weatherInstance = axios.create({
   params: {
     key: ENV.WEATHER_API_KEY,
     include: 'days',
-    elements: 'tempmax,tempmin,temp',
+    elements: 'temp,datetime',
     unitGroup: 'metric',
   },
 });

@@ -27,6 +27,7 @@ export const Navigation = (): React.JSX.Element => {
             tabBarIcon: ({ size, color }) => (
               <Icon name="magnify" size={size} color={color} />
             ),
+            tabBarHideOnKeyboard: true,
           }}
         />
       </TabsStack.Navigator>
