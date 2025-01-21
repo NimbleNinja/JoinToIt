@@ -19,8 +19,8 @@ export const MapScreen = () => {
     setMarkerText('Loading...');
 
     try {
-      const locationRequest = fetchLocation(params);
-      const weatherRequest = fetchWeatherByLatLong(params);
+      const locationRequest = await fetchLocation(params);
+      const weatherRequest = await fetchWeatherByLatLong(params);
       const [locationResponse, weatherResponse] = await Promise.all([
         locationRequest,
         weatherRequest,

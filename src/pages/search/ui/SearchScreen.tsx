@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     fontSize: 24,
     textAlign: 'center',
+    color: 'black',
   },
   searchBar: {
     marginBottom: 12,
@@ -103,6 +104,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: 'white',
     fontSize: 24,
+    color: 'black',
   },
   searchButton: {
     backgroundColor: 'white',
@@ -123,8 +125,10 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 24,
     textTransform: 'capitalize',
+    color: 'black',
   },
   temp: {
     fontSize: 24,
+    color: 'black',
   },
 });
